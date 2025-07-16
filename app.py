@@ -10,16 +10,6 @@ from datetime import datetime
 app = Flask(__name__, static_folder='static')
 CORS(app)
 
-# Add this route for static files
-@app.route('/<path:filename>')
-def static_files(filename):
-    return send_from_directory('static', filename)
-
-# Keep your existing routes...
-@app.route('/')
-def index():
-    return send_file('static/index.html')
-
 # Move credentials to environment variables for security
 CLIENT_ID = os.getenv('PLAID_CLIENT_ID', '638a31f9c71c5a0014c2de77')
 SECRET_KEY = os.getenv('PLAID_SECRET_KEY', 'aa9b0d6e64bc781ab58f97e4358e6c')
@@ -79,6 +69,18 @@ def fetch_institutions_with_delay(country_codes, routing_numbers, oauth, include
 @app.route('/')
 def index():
     return send_file('static/index.html')
+
+@app.route('/style.css')
+def style():
+    return send_file('static/style.css')
+
+@app.route('/script.js')
+def script():
+    return send_file('static/script.js')
+
+@app.route('/<path:filename>')
+def static_files(filename):
+    return send_from_directory('static', filename)
 
 @app.route('/api/institutions', methods=['POST'])
 def get_institutions():
