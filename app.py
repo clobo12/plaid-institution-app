@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 import csv
 import requests
@@ -7,8 +7,18 @@ import io
 import os
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 CORS(app)
+
+# Add this route for static files
+@app.route('/<path:filename>')
+def static_files(filename):
+    return send_from_directory('static', filename)
+
+# Keep your existing routes...
+@app.route('/')
+def index():
+    return send_file('static/index.html')
 
 # Move credentials to environment variables for security
 CLIENT_ID = os.getenv('PLAID_CLIENT_ID', '638a31f9c71c5a0014c2de77')
